@@ -2,12 +2,9 @@ package repository
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
-
-	"github.com/eugenshima/moviori_movies/internal/model"
 )
 
 type KinopoiskApiRepo struct {
@@ -17,25 +14,34 @@ func NewKinopoiskApiRepo() *KinopoiskApiRepo {
 	return &KinopoiskApiRepo{}
 }
 
-func (kino *KinopoiskApiRepo) FindByID(ctx context.Context, id string) (*model.Movie, error) {
+func (kino *KinopoiskApiRepo) FindByID(ctx context.Context, id string) ([]byte, error) {
 	url := "https://api.kinopoisk.dev/v1.4/movie/" + id
 
-	req, _ := http.NewRequest("GET", url, nil)
+	req, err := http.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, fmt.Errorf("http.NewRequest: %v", err)
+	}
 
 	req.Header.Add("accept", "application/json")
 	req.Header.Add("X-API-KEY", "YDQGDCE-8AFMY5N-GEDFY02-14XCVG7")
 
-	res, _ := http.DefaultClient.Do(req)
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("http.DefaultClient.Do: %v", err)
+	}
 
 	defer res.Body.Close()
-	body, _ := io.ReadAll(res.Body)
-
-	movie := &model.Movie{}
-	err := json.Unmarshal(body, &movie)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
-		return nil, fmt.Errorf(" Unmarshal: %w", err)
+		return nil, fmt.Errorf("io.ReadAll: %v", err)
 	}
-	return movie, nil
+
+	// movie := &model.Movie{}
+	// err := json.Unmarshal(body, &movie)
+	// if err != nil {
+	// 	return nil, fmt.Errorf(" Unmarshal: %w", err)
+	// }
+	return body, nil
 }
 
 // func (kino *KinopoiskApiRepo) FindByName(ctx context.Context, id string) (*model.movieByName, error) {

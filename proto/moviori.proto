@@ -1,0 +1,19 @@
+syntax = "proto3";
+option go_package = "github.com/eugenshima/moviori_movies";
+
+message Movie {
+    string ID = 1;
+}
+
+service Moviori_movies {
+    rpc FindByName(FindMovieRequest) returns (FindMovieResponse);
+}
+
+
+message FindMovieRequest {
+    Movie movie = 1;
+}
+
+message FindMovieResponse {
+    bytes MovieInfo = 1;
+}
