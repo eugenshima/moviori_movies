@@ -21,7 +21,7 @@ type MovieService interface {
 }
 
 func (hnd *MovieHandler) FindByName(ctx context.Context, req *proto.FindMovieRequest) (*proto.FindMovieResponse, error) {
-	id := req.Movie.ID
+	id := req.ID
 	movie, err := hnd.hnd.GetMovieInfo(ctx, id)
 	if err != nil {
 		return nil, fmt.Errorf("GetMovieInfo: %v", err)
