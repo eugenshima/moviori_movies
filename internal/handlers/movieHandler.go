@@ -26,6 +26,7 @@ func (hnd *MovieHandler) FindByName(ctx context.Context, req *proto.FindMovieReq
 	if err != nil {
 		return nil, fmt.Errorf("GetMovieInfo: %v", err)
 	}
+	fmt.Println(string(movie))
 	response := &proto.FindMovieResponse{
 		MovieInfo: movie,
 	}
